@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <span>To5kRun</span>
+</mat-toolbar>
+<mat-nav-list>
+  <a mat-list-item *ngFor="let item of list" [routerLink]="['/program', item.name]">
+    {{item.name}}
+    <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+  </a>
+</mat-nav-list>

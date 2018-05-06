@@ -1,0 +1,15 @@
+.timer {
+  font-size: 32px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+h1 {
+  text-align: center;
+}
+
+.run-button {
+  width: 100%;
+  margin-top: 10px;
+  display: block;
+}

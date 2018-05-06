@@ -1,0 +1,34 @@
+<mat-toolbar>
+  <button [routerLink]="['/program', programName]" mat-icon-button>
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <span>{{day.name}}</span>
+</mat-toolbar>
+<mat-card>
+  <p class="timer">
+    {{time}}
+  </p>
+  <p>
+    {{type}}
+  </p>
+  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+  <p *ngIf="inDistance">
+    {{distance}}
+  </p>
+  <p *ngIf="inDistance">
+    <button (click)="finishDistance()" mat-raised-button color="primary">Finish distance</button>
+  </p>
+  <div *ngIf="!inDistance">
+    <button mat-raised-button color="primary" (click)="startTimer()" class="run-button">Start</button>
+    <button mat-raised-button color="primary" (click)="pauseTimer()" class="run-button">Pause</button>
+    <button mat-raised-button color="primary" (click)="stopTimer()" class="run-button">Stop</button>
+  </div>
+  <mat-list>
+    <mat-list-item *ngFor="let timer of day.timing">
+      <!--{{timer.type}}:{{timer.time > 0 ? timer.time : timer.distance + 'm'}}-->
+      <!--<span>({{timer.time}})</span>-->
+      <span *ngIf="timer.time > 0" appClockTime [cTime]="timer.time"></span>
+      <!--<span *ngIf="timer.distance > 0">{{timer.distance}}m</span>-->
+    </mat-list-item>
+  </mat-list>
+</mat-card>
