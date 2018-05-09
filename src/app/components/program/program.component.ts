@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/observable/of';
+
+
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {Program, ProgramDay, ProgramsService} from '../../services/programs.service';
-import {Observable} from 'rxjs/Observable';
+import {Program, ProgramsService} from '../../services/programs.service';
 
 @Component({
   selector: 'app-program',

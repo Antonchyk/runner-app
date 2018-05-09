@@ -9,6 +9,17 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="mat-typography">
-  <app-root></app-root>
+<app-root></app-root>
+<script src="/__/firebase/4.13.0/firebase-app.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="sw.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function () {
+        console.log('Service Worker Registered');
+      });
+  }
+</script>
 </body>
 </html>
