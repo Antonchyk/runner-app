@@ -1,7 +1,7 @@
 var cacheName = 'runner-app-cache';
 var filesToCache = [
-  '/',
-  '/index.html',
+  // '/',
+  // '/index.html',
 ];
 self.addEventListener('install', function (e) {
   console.log('[ServiceWorker] Install');

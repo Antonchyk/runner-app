@@ -8,7 +8,7 @@ import {Howl} from 'howler';
 @Component({
   selector: 'app-program-day',
   templateUrl: './program-day.component.html',
-  styleUrls: ['./program-day.component.css']
+  styleUrls: ['./program-day.component.scss']
 })
 export class ProgramDayComponent implements OnInit {
 
@@ -17,16 +17,14 @@ export class ProgramDayComponent implements OnInit {
   type = '';
   distance = 0;
   progress = 100;
-  // stepsList: {
-  //   name: string;
-  //   value: number
-  // }[] = [];
-  private roundIndex = 0;
-  private schedule: TimerItem[] = [];
-  private inPause = false;
   day: ProgramDay;
   inDistance = false;
   programName: string | null;
+  inProgress = false;
+  roundIndex = 0;
+  schedule: TimerItem[] = [];
+  inPause = false;
+  dayIndex: number;
   private sound: Howl;
 
 
@@ -43,9 +41,9 @@ export class ProgramDayComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const index = +params.get('day-index');
+      this.dayIndex = +params.get('day-index');
       this.programName = params.get('program-name');
-      this.day = this.service.getProgramDay(this.programName, index);
+      this.day = this.service.getProgramDay(this.programName, this.dayIndex);
       this.schedule = this.day.timing;
       this.type = this.schedule[0].type;
     });
@@ -53,6 +51,7 @@ export class ProgramDayComponent implements OnInit {
       src: ['../../../assets/sounds/beep.wav'],
       html5: true
     });
+    this.subscribeToPageHide();
   }
 
   startTimer() {
@@ -72,6 +71,7 @@ export class ProgramDayComponent implements OnInit {
     this.timer.stop();
     this.roundIndex = 0;
     this.type = this.schedule[0].type;
+    this.inProgress = false;
     this.showTime(new Date(this.schedule[0].time));
   }
 
@@ -79,6 +79,7 @@ export class ProgramDayComponent implements OnInit {
     if (this.timer.getTime() > 0) {
       this.inPause = true;
       this.timer.pause();
+      this.inProgress = false;
     }
   }
 
@@ -91,6 +92,7 @@ export class ProgramDayComponent implements OnInit {
     const timeLeft = new Date(this.timer.getTime());
     this.showTime(timeLeft);
     this.progress = (this.timer.getTime() / this.schedule[this.roundIndex].time) * 100;
+    this.inProgress = true;
   }
 
   private showTime(timeDate: Date) {
@@ -114,7 +116,39 @@ export class ProgramDayComponent implements OnInit {
       }
     } else {
       this.type = 'you are done';
+      this.inProgress = false;
     }
+  }
+
+  private subscribeToPageHide() {
+    // window.addEventListener('pagehide', () => {
+    //   localStorage.setItem('pagehide', 'true');
+    //   // this.saveCurrentStateBeforeClose();
+    // }, false);
+    // window.addEventListener('blur', () => {
+    //   localStorage.setItem('blur', 'true');
+    //   this.saveCurrentStateBeforeClose();
+    // }, false);
+    // window.addEventListener('abort', () => {
+    //   localStorage.setItem('abort', 'true');
+    // }, false);
+    // window.addEventListener('touchcancel', () => {
+    //   localStorage.setItem('touchcancel', 'true');
+    // }, false);
+    // window.addEventListener('unload', () => {
+    //   localStorage.setItem('unload', 'true');
+    //   this.saveCurrentStateBeforeClose();
+    // }, false);
+  }
+
+  private saveCurrentStateBeforeClose() {
+    const state = {
+      programName: this.programName,
+      dayIndex: this.dayIndex,
+      roundIndex: this.roundIndex,
+      roundTimeLeft: this.timer.getTime()
+    };
+    localStorage.setItem('LAST_ROUND', JSON.stringify(state));
   }
 
 }
