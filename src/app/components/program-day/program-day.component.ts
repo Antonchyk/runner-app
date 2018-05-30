@@ -3,6 +3,7 @@ import Timer from '../../core/Timer';
 import {ProgramDay, ProgramsService, TimerItem} from '../../services/programs.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Howl} from 'howler';
+import {UserService} from '../../services/user.service';
 
 
 @Component({
@@ -25,18 +26,26 @@ export class ProgramDayComponent implements OnInit {
   schedule: TimerItem[] = [];
   inPause = false;
   dayIndex: number;
+  dayIsDone = false;
+  totalTimeLeft: number;
   private sound: Howl;
+  private timeLeftTimer: Timer;
 
 
   constructor
   (
     private route: ActivatedRoute,
     private router: Router,
-    private service: ProgramsService
+    private service: ProgramsService,
+    private userService: UserService
   ) {
     this.timer = new Timer();
     this.timer.emitter.on('tick', () => this.onTick());
     this.timer.emitter.on('finished', () => this.onTimerFinished());
+
+    this.timeLeftTimer = new Timer();
+    this.timer.emitter.on('tick', () => this.updateTotalTimeLeft());
+    //this.timer.emitter.on('finished', () => this.onTimerFinished());
   }
 
   ngOnInit() {
@@ -46,6 +55,7 @@ export class ProgramDayComponent implements OnInit {
       this.day = this.service.getProgramDay(this.programName, this.dayIndex);
       this.schedule = this.day.timing;
       this.type = this.schedule[0].type;
+      this.totalTimeLeft = this.getTotalTime(this.day);
     });
     this.sound = new Howl({
       src: ['../../../assets/sounds/beep.wav'],
@@ -58,11 +68,14 @@ export class ProgramDayComponent implements OnInit {
     if (this.inPause) {
       this.inPause = false;
       this.timer.unPause();
+      this.timeLeftTimer.unPause();
     } else {
       this.roundIndex = 0;
       this.type = this.schedule[0].type;
       this.timer.stop();
       this.timer.start(this.schedule[0].time);
+      this.timeLeftTimer.stop();
+      this.timeLeftTimer.start(this.totalTimeLeft);
     }
   }
 
@@ -80,12 +93,20 @@ export class ProgramDayComponent implements OnInit {
       this.inPause = true;
       this.timer.pause();
       this.inProgress = false;
+      this.timeLeftTimer.pause();
     }
   }
 
   finishDistance() {
     this.inDistance = false;
     this.onTimerFinished();
+  }
+
+  saveDay() {
+    this.userService.saveProgress(this.dayIndex, this.programName)
+      .then(() => {
+        console.log('Progress saved');
+      });
   }
 
   private onTick() {
@@ -117,6 +138,7 @@ export class ProgramDayComponent implements OnInit {
     } else {
       this.type = 'you are done';
       this.inProgress = false;
+      this.dayIsDone = true;
     }
   }
 
@@ -149,6 +171,18 @@ export class ProgramDayComponent implements OnInit {
       roundTimeLeft: this.timer.getTime()
     };
     localStorage.setItem('LAST_ROUND', JSON.stringify(state));
+  }
+
+  private getTotalTime(day: ProgramDay): number {
+    let t = 0;
+    day.timing.forEach(i => {
+      t += i.time;
+    });
+    return t;
+  }
+
+  private updateTotalTimeLeft() {
+    this.totalTimeLeft = this.timeLeftTimer.getTime();
   }
 
 }

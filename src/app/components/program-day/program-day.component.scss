@@ -11,12 +11,14 @@ h1 {
 }
 
 .run-button {
-  width: 100%;
+  //width: 100%;
   margin-top: 10px;
-  display: block;
+  //display: block;
   font-size: 30px;
   line-height: 30px;
-  padding: 20px 0;
+  //padding: 20px 0;
+  width: 110px;
+  height: 110px;
 }
 
 .training-type {
@@ -29,8 +31,8 @@ h1 {
 
 .next-item {
   text-align: center;
-  margin: 20px 0;
-  font-size: 16px;
+  margin: 0 0 5px 0;
+  font-size: 14px;
 }
 
 .upper {

@@ -9,6 +9,7 @@ export interface TimerItem {
 export interface ProgramDay {
   name: string;
   timing: TimerItem[];
+  isDone: boolean;
 }
 
 export interface Program {
@@ -72,8 +73,9 @@ export class ProgramsService {
     const config: ProgramDayConfig[] = this.getConfigFor5k();
     config.forEach((item, index) => {
       const day: ProgramDay = {
-        name: `Day ${index + 1} / Week ${Math.ceil((index + 1) / 3)}`,
-        timing: []
+        name: `Day ${index + 1}`,
+        timing: [],
+        isDone: false
       };
       if (item.activity.longRunning.distance > 0) {
         day.timing.push({

@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar color="primary">
   <button [routerLink]="['/program', programName]" mat-icon-button>
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
@@ -11,31 +11,47 @@
   <p class="training-type">
     {{type}}
   </p>
+  <mat-grid-list cols="8" rowHeight="150px">
+    <mat-grid-tile [colspan]="2">
+      <div>
+        <p class="next-item">Time left:</p>
+        <p class="next-item">
+          {{totalTimeLeft | date:'mm:ss'}}
+        </p>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="4">
+      <div *ngIf="!inDistance && !dayIsDone">
+        <button mat-fab color="primary" (click)="startTimer()" class="run-button mat-elevation-z0" *ngIf="!inProgress">
+          Start
+        </button>
+        <button mat-fab color="primary" (click)="pauseTimer()" class="run-button mat-elevation-z0" *ngIf="inProgress">
+          Pause
+        </button>
+      </div>
+      <div *ngIf="inDistance">
+        <button mat-fab color="primary" (click)="finishDistance()" class="run-button mat-elevation-z0">Finish distance
+        </button>
+      </div>
+      <div *ngIf="dayIsDone">
+        <button mat-fab color="primary" (click)="saveDay()" class="run-button mat-elevation-z0">Done</button>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2">
+      <div *ngIf="schedule[roundIndex + 1]">
+        <p class="next-item">Next:</p>
+        <p class="next-item">
+          <span>{{schedule[roundIndex + 1].type}}</span>&nbsp;
+          <span *ngIf="schedule[roundIndex + 1].time > 0">{{schedule[roundIndex + 1].time | date:'mm:ss'}}</span>
+          <span *ngIf="schedule[roundIndex + 1].distance > 0">{{schedule[roundIndex + 1].distance}}m</span>
+        </p>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
   <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
   <p *ngIf="inDistance">
     {{distance}}
   </p>
-  <p *ngIf="inDistance">
-    <button (click)="finishDistance()" mat-raised-button color="primary">Finish distance</button>
-  </p>
-  <div *ngIf="!inDistance">
-    <button mat-raised-button color="primary" (click)="startTimer()" class="run-button" *ngIf="!inProgress">Start
-    </button>
-    <button mat-raised-button color="primary" (click)="pauseTimer()" class="run-button" *ngIf="inProgress">Pause
-    </button>
-  </div>
-  <div *ngIf="schedule[roundIndex + 1]">
-    <p class="next-item">
-      <mat-chip-list>
-        <mat-chip class="margin-auto">
-          Next is&nbsp;
-          <span class="upper">{{schedule[roundIndex + 1].type}}</span>&nbsp;
-          <span *ngIf="schedule[roundIndex + 1].time > 0" appClockTime [cTime]="schedule[roundIndex + 1].time"></span>
-          <span *ngIf="schedule[roundIndex + 1].distance > 0">{{schedule[roundIndex + 1].distance}}m</span>
-        </mat-chip>
-      </mat-chip-list>
-    </p>
-  </div>
   <!--<mat-list>-->
   <!--<mat-list-item *ngFor="let timer of day.timing">-->
   <!--<span *ngIf="timer.time > 0" appClockTime [cTime]="timer.time"></span>-->

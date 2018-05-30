@@ -1,12 +1,25 @@
-<mat-toolbar>
+<mat-toolbar color="primary">
   <button [routerLink]="['/']" mat-icon-button>
     <mat-icon>keyboard_arrow_left</mat-icon>
   </button>
   <span>{{program.name}}</span>
 </mat-toolbar>
-<mat-nav-list>
-  <a mat-list-item *ngFor="let day of program.days; let i = index;" [routerLink]="['/program-day', program.name, i]">{{day.name}}
-    <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-  </a>
-</mat-nav-list>
+<mat-grid-list cols="3" rowHeight="2:1">
+  <mat-grid-tile *ngFor="let day of program.days; let i = index;"
+                 [routerLink]="['/program-day', program.name, i]"
+                 [ngClass]="{'checked': day.isDone}">
+    <!--<mat-icon *ngIf="day.isDone">radio_button_checked</mat-icon>-->
+    <!--<mat-icon *ngIf="!day.isDone">radio_button_unchecked</mat-icon>-->
+    <p>{{day.name}}</p>
+  </mat-grid-tile>
+</mat-grid-list>
+<!--<mat-nav-list>-->
+<!--<a mat-list-item *ngFor="let day of program.days; let i = index;"-->
+<!--[routerLink]="['/program-day', program.name, i]">-->
+<!--<mat-icon *ngIf="day.isDone">radio_button_checked</mat-icon>-->
+<!--<mat-icon *ngIf="!day.isDone">radio_button_unchecked</mat-icon>-->
+<!--{{day.name}}-->
+<!--<mat-divider [inset]="true" *ngIf="!last"></mat-divider>-->
+<!--</a>-->
+<!--</mat-nav-list>-->
 
