@@ -8,9 +8,8 @@
   <mat-grid-tile *ngFor="let day of program.days; let i = index;"
                  [routerLink]="['/program-day', program.name, i]"
                  [ngClass]="{'checked': day.isDone}">
-    <!--<mat-icon *ngIf="day.isDone">radio_button_checked</mat-icon>-->
-    <!--<mat-icon *ngIf="!day.isDone">radio_button_unchecked</mat-icon>-->
-    <p>{{day.name}}</p>
+    <mat-icon *ngIf="day.isDone">check</mat-icon>
+    {{day.name}}
   </mat-grid-tile>
 </mat-grid-list>
 <!--<mat-nav-list>-->
