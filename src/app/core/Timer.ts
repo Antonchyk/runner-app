@@ -46,8 +46,4 @@ export default class TimerCountdown {
     clearInterval(this.timer);
   }
 
-  onTick(callback: Function) {
-
-  }
-
 }

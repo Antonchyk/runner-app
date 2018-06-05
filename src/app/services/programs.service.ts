@@ -63,7 +63,22 @@ export class ProgramsService {
       },
       {
         name: '10k',
-        days: []
+        days: [{
+          name: 'Day 1',
+          timing: [
+            {
+              type: 'warm up',
+              distance: 0,
+              time: 3000
+            },
+            {
+              type: 'long run',
+              distance: 2000,
+              time: 0
+            }
+          ],
+          isDone: false
+        }]
       }
     ];
   }

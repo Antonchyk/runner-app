@@ -4,6 +4,7 @@ import {ProgramDay, ProgramsService, TimerItem} from '../../services/programs.se
 import {ActivatedRoute, Router} from '@angular/router';
 import {Howl} from 'howler';
 import {UserService} from '../../services/user.service';
+import Distance from '../../core/Distance';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ProgramDayComponent implements OnInit {
   totalTimeLeft: number;
   private sound: Howl;
   private timeLeftTimer: Timer;
+  private distanceTicker: Distance;
 
 
   constructor
@@ -44,8 +46,14 @@ export class ProgramDayComponent implements OnInit {
     this.timer.emitter.on('finished', () => this.onTimerFinished());
 
     this.timeLeftTimer = new Timer();
-    this.timer.emitter.on('tick', () => this.updateTotalTimeLeft());
-    //this.timer.emitter.on('finished', () => this.onTimerFinished());
+    this.timeLeftTimer.emitter.on('tick', () => this.updateTotalTimeLeft());
+
+
+    this.distanceTicker = new Distance();
+    this.distanceTicker.emitter.on('tick', distance => {
+      this.time = distance;
+      console.log(distance);
+    });
   }
 
   ngOnInit() {
@@ -130,7 +138,8 @@ export class ProgramDayComponent implements OnInit {
       this.type = currentSchedule.type;
       if (currentSchedule.distance > 0) {
         this.inDistance = true;
-        this.distance = currentSchedule.distance;
+        // this.distance = currentSchedule.distance;
+        this.distanceTicker.start();
       } else if (currentSchedule.time > 0) {
         this.timer.start(currentSchedule.time);
         this.sound.play();
