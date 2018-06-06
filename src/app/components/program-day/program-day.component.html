@@ -6,7 +6,7 @@
 </mat-toolbar>
 <mat-card class="wrapper">
   <p class="timer">
-    {{time}}
+    {{time | date:'mm:ss'}}
   </p>
   <p class="training-type">
     {{type}}

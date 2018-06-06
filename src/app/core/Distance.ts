@@ -67,6 +67,7 @@ export default class Distance implements ITikcer {
       this.currentValue = getDistanceFromGeo(pos.coords.longitude, pos.coords.latitude, this.lastLong, this.lastLong);
       // this.lastLong = pos.coords.longitude;
       // this.lastLat = pos.coords.latitude;
+      console.log(pos.coords.longitude, pos.coords.latitude);
       this.emitter.emit('tick', this.currentValue);
     });
   }

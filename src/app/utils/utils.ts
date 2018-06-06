@@ -10,5 +10,5 @@ export function getDistanceFromGeo(lon1, lat1, lon2, lat2): number {
     Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return (R * c) / 1000; // Distance in km
+  return (R * c) * 1000; // Distance in km
 }

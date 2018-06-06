@@ -14,7 +14,7 @@ import Distance from '../../core/Distance';
 })
 export class ProgramDayComponent implements OnInit {
 
-  time = '00:00:0';
+  time: Date = new Date(0);
   timer: Timer;
   type = '';
   distance = 0;
@@ -93,7 +93,7 @@ export class ProgramDayComponent implements OnInit {
     this.roundIndex = 0;
     this.type = this.schedule[0].type;
     this.inProgress = false;
-    this.showTime(new Date(this.schedule[0].time));
+    this.time = new Date(this.schedule[0].time);
   }
 
   pauseTimer() {
@@ -118,17 +118,9 @@ export class ProgramDayComponent implements OnInit {
   }
 
   private onTick() {
-    const timeLeft = new Date(this.timer.getTime());
-    this.showTime(timeLeft);
+    this.time = new Date(this.timer.getTime());
     this.progress = (this.timer.getTime() / this.schedule[this.roundIndex].time) * 100;
     this.inProgress = true;
-  }
-
-  private showTime(timeDate: Date) {
-    const minutes = timeDate.getMinutes() < 10 ? '0' + timeDate.getMinutes() : timeDate.getMinutes();
-    const seconds = timeDate.getSeconds() < 10 ? '0' + timeDate.getSeconds() : timeDate.getSeconds();
-    const milliSeconds = Math.floor(timeDate.getMilliseconds() / 100);
-    this.time = `${minutes}:${seconds}:${milliSeconds}`;
   }
 
   private onTimerFinished() {
