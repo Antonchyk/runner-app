@@ -115,6 +115,12 @@ export class ProgramDayComponent implements OnInit {
       .then(() => {
         console.log('Progress saved');
       });
+    this.router.navigate(['/program', this.programName]);
+  }
+
+  next() {
+    this.timer.stop();
+    this.onTimerFinished();
   }
 
   private onTick() {
@@ -131,9 +137,11 @@ export class ProgramDayComponent implements OnInit {
       if (currentSchedule.distance > 0) {
         this.inDistance = true;
         // this.distance = currentSchedule.distance;
-        this.distanceTicker.start();
+        // this.distanceTicker.start();
       } else if (currentSchedule.time > 0) {
         this.timer.start(currentSchedule.time);
+        this.timeLeftTimer.stop();
+        this.timeLeftTimer.start(this.getTotalTime(this.day));
         this.sound.play();
       }
     } else {
@@ -175,11 +183,13 @@ export class ProgramDayComponent implements OnInit {
   }
 
   private getTotalTime(day: ProgramDay): number {
-    let t = 0;
-    day.timing.forEach(i => {
-      t += i.time;
-    });
-    return t;
+    let sum = 0;
+    day.timing
+      .slice(this.roundIndex)
+      .map(i => {
+        sum += i.time;
+      });
+    return sum;
   }
 
   private updateTotalTimeLeft() {

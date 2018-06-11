@@ -38,14 +38,18 @@
       </div>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="2">
-      <div *ngIf="schedule[roundIndex + 1]">
+      <div>
         <p class="next-item">Next:</p>
-        <p class="next-item">
+        <p class="next-item" (click)="next()" *ngIf="schedule[roundIndex + 1]">
           <span>{{schedule[roundIndex + 1].type}}</span>&nbsp;
           <span *ngIf="schedule[roundIndex + 1].time > 0">{{schedule[roundIndex + 1].time | date:'mm:ss'}}</span>
           <span *ngIf="schedule[roundIndex + 1].distance > 0">{{schedule[roundIndex + 1].distance}}m</span>
         </p>
+        <p *ngIf="!schedule[roundIndex + 1]" (click)="saveDay()">
+          <span>Done</span>
+        </p>
       </div>
+
     </mat-grid-tile>
   </mat-grid-list>
   <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
