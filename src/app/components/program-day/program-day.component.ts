@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import Timer from '../../core/Timer';
 import {ProgramDay, ProgramsService, TimerItem} from '../../services/programs.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Howl} from 'howler';
 import {UserService} from '../../services/user.service';
 import Distance from '../../core/Distance';
+import {DistanceService} from '../../services/distance.service';
 
 
 @Component({
@@ -12,7 +13,7 @@ import Distance from '../../core/Distance';
   templateUrl: './program-day.component.html',
   styleUrls: ['./program-day.component.scss']
 })
-export class ProgramDayComponent implements OnInit {
+export class ProgramDayComponent implements OnInit, OnDestroy {
 
   time: Date = new Date(0);
   timer: Timer;
@@ -39,7 +40,8 @@ export class ProgramDayComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private service: ProgramsService,
-    private userService: UserService
+    private userService: UserService,
+    private distanceService: DistanceService
   ) {
     this.timer = new Timer();
     this.timer.emitter.on('tick', () => this.onTick());
@@ -48,11 +50,9 @@ export class ProgramDayComponent implements OnInit {
     this.timeLeftTimer = new Timer();
     this.timeLeftTimer.emitter.on('tick', () => this.updateTotalTimeLeft());
 
-
-    this.distanceTicker = new Distance();
-    this.distanceTicker.emitter.on('tick', distance => {
-      this.time = distance;
+    this.distanceService.emitter.on('distance_changed', distance => {
       console.log(distance);
+      this.distance = distance;
     });
   }
 
@@ -69,7 +69,10 @@ export class ProgramDayComponent implements OnInit {
       src: ['../../../assets/sounds/beep.wav'],
       html5: true
     });
-    this.subscribeToPageHide();
+  }
+
+  ngOnDestroy() {
+    localStorage.removeItem('LAST_ROUND');
   }
 
   startTimer() {
@@ -116,6 +119,7 @@ export class ProgramDayComponent implements OnInit {
         console.log('Progress saved');
       });
     this.router.navigate(['/program', this.programName]);
+    localStorage.removeItem('LAST_ROUND');
   }
 
   next() {
@@ -127,6 +131,7 @@ export class ProgramDayComponent implements OnInit {
     this.time = new Date(this.timer.getTime());
     this.progress = (this.timer.getTime() / this.schedule[this.roundIndex].time) * 100;
     this.inProgress = true;
+    this.saveCurrentState();
   }
 
   private onTimerFinished() {
@@ -136,18 +141,19 @@ export class ProgramDayComponent implements OnInit {
       this.type = currentSchedule.type;
       if (currentSchedule.distance > 0) {
         this.inDistance = true;
-        // this.distance = currentSchedule.distance;
-        // this.distanceTicker.start();
+        this.distanceService.start();
       } else if (currentSchedule.time > 0) {
         this.timer.start(currentSchedule.time);
         this.timeLeftTimer.stop();
         this.timeLeftTimer.start(this.getTotalTime(this.day));
         this.sound.play();
+        this.distanceService.stop();
       }
     } else {
       this.type = 'you are done';
       this.inProgress = false;
       this.dayIsDone = true;
+      localStorage.removeItem('LAST_ROUND');
     }
   }
 
@@ -172,7 +178,7 @@ export class ProgramDayComponent implements OnInit {
     // }, false);
   }
 
-  private saveCurrentStateBeforeClose() {
+  private saveCurrentState() {
     const state = {
       programName: this.programName,
       dayIndex: this.dayIndex,

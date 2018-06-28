@@ -21,7 +21,8 @@ import {
   MatStepperModule, MatTableModule, MatTabsModule, MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 import {ClockTimeDirective} from './directives/clock-time.directive';
-import {UserService} from "./services/user.service";
+import {UserService} from './services/user.service';
+import {DistanceService} from './services/distance.service';
 
 const appRoutes: Routes = [
   {
@@ -87,7 +88,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     ProgramsService,
-    UserService
+    UserService,
+    DistanceService
   ],
   bootstrap: [AppComponent]
 })

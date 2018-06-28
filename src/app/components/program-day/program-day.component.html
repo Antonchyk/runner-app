@@ -5,8 +5,11 @@
   <span>{{day.name}}</span>
 </mat-toolbar>
 <mat-card class="wrapper">
-  <p class="timer">
+  <p class="timer" *ngIf="!inDistance">
     {{time | date:'mm:ss'}}
+  </p>
+  <p class="timer" *ngIf="inDistance">
+    {{distance}}
   </p>
   <p class="training-type">
     {{type}}

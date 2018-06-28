@@ -14,6 +14,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (localStorage.getItem('LAST_ROUND')) {
+      const state = JSON.parse(localStorage.getItem('LAST_ROUND'));
+      this.router.navigate(['/program-day', state.programName, state.dayIndex]);
+    }
+    // this.router.navigate(['/program-day', '5k', '0']);
   }
 
 }

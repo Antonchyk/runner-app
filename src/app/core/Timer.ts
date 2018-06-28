@@ -5,7 +5,7 @@ import {EventEmitter} from 'events';
 export default class TimerCountdown {
   private timer = null;
   private currentTime = 0;
-  private TICK = 50;
+  private TICK = 100;
   emitter = new EventEmitter();
 
   constructor() {
