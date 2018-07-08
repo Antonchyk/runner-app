@@ -1,4 +1,5 @@
 import {EventEmitter} from 'events';
+
 /**
  * Created by antonchyk on 4/24/18.
  */
@@ -7,6 +8,10 @@ export default class TimerCountdown {
   private currentTime = 0;
   private TICK = 100;
   emitter = new EventEmitter();
+
+  public get tick(): number {
+    return this.TICK;
+  }
 
   constructor() {
 

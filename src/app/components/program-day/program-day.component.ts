@@ -4,9 +4,9 @@ import {ProgramDay, ProgramsService, TimerItem} from '../../services/programs.se
 import {ActivatedRoute, Router} from '@angular/router';
 import {Howl} from 'howler';
 import {UserService} from '../../services/user.service';
-import Distance from '../../core/Distance';
 import {DistanceService} from '../../services/distance.service';
 
+const SAVE_INTERVAL = 2000;
 
 @Component({
   selector: 'app-program-day',
@@ -32,7 +32,7 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
   totalTimeLeft: number;
   private sound: Howl;
   private timeLeftTimer: Timer;
-  private distanceTicker: Distance;
+  private saveCounter = 0;
 
 
   constructor
@@ -179,13 +179,17 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
   }
 
   private saveCurrentState() {
-    const state = {
-      programName: this.programName,
-      dayIndex: this.dayIndex,
-      roundIndex: this.roundIndex,
-      roundTimeLeft: this.timer.getTime()
-    };
-    localStorage.setItem('LAST_ROUND', JSON.stringify(state));
+    this.saveCounter += this.timer.tick;
+    if (this.saveCounter > SAVE_INTERVAL) {
+      this.saveCounter = 0;
+      const state = {
+        programName: this.programName,
+        dayIndex: this.dayIndex,
+        roundIndex: this.roundIndex,
+        roundTimeLeft: this.timer.getTime()
+      };
+      localStorage.setItem('LAST_ROUND', JSON.stringify(state));
+    }
   }
 
   private getTotalTime(day: ProgramDay): number {
