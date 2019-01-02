@@ -33,6 +33,9 @@ export interface ProgramDayConfig {
   warmDown: number;
 }
 
+// const RUN_SPEED = 8; // km/h
+const MINUTE = 60000;
+
 @Injectable()
 export class ProgramsService {
   private program: ProgramDay[];
@@ -67,12 +70,12 @@ export class ProgramsService {
           name: 'Day 1',
           timing: [
             {
-              type: 'warm up',
+              type: 'warm_up',
               distance: 0,
               time: 3000
             },
             {
-              type: 'long run',
+              type: 'long_run',
               distance: 2000,
               time: 0
             }
@@ -93,36 +96,44 @@ export class ProgramsService {
         isDone: false
       };
       if (item.activity.longRunning.distance > 0) {
-        day.timing.push({
-          type: 'long run',
-          distance: item.activity.longRunning.distance,
-          time: 0
-        });
+        day.timing.push(
+          {
+            type: 'run',
+            distance: 0,
+            time: 0
+          }
+        );
       } else {
         for (let i = 0; i < item.activity.repeatRunning.repeat; i++) {
-          day.timing.push(
-            {
-              type: 'run',
-              distance: 0,
-              time: item.activity.repeatRunning.run
-            },
-            {
-              type: 'walk',
-              distance: 0,
-              time: item.activity.repeatRunning.walk
-            }
-          );
+          if (item.activity.repeatRunning.run > 0) {
+            day.timing.push(
+              {
+                type: 'run',
+                distance: 0,
+                time: item.activity.repeatRunning.run * MINUTE
+              }
+            );
+          }
+          if (item.activity.repeatRunning.walk > 0) {
+            day.timing.push(
+              {
+                type: 'walk',
+                distance: 0,
+                time: item.activity.repeatRunning.walk
+              }
+            );
+          }
         }
       }
 
       day.timing.unshift({
-        type: 'warm up',
+        type: 'warm_up',
         distance: 0,
         time: item.warmUp
       });
 
       day.timing.push({
-        type: 'warm down',
+        type: 'warm_down',
         distance: 0,
         time: item.warmDown
       });
@@ -132,382 +143,381 @@ export class ProgramsService {
   }
 
   private getConfigFor5k(): ProgramDayConfig[] {
-    const MINUTE = 60000;
     return [
       // region week 1
       {
         name: 'day 1/ week 1',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE,
-            walk: MINUTE * 2,
+            run: 1,
+            walk: 2,
             repeat: 6
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 1',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE,
-            walk: MINUTE * 2,
+            run: 1,
+            walk: 2,
             repeat: 6
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 1',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE,
-            walk: MINUTE,
+            run: 1,
+            walk: 1,
             repeat: 10
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 1
       // region week 2
       {
         name: 'day 1/ week 2',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 2,
-            walk: MINUTE * 3,
+            run: 2,
+            walk: 3,
             repeat: 5
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 2',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE,
-            walk: MINUTE,
+            run: 1,
+            walk: 1,
             repeat: 10
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 2',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 11,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 1500
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 2
       // region week 3
       {
         name: 'day 1/ week 3',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 3,
-            walk: MINUTE * 3,
+            run: 3,
+            walk: 3,
             repeat: 4
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 3',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 3,
-            walk: MINUTE * 3,
+            run: 3,
+            walk: 3,
             repeat: 4
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 3',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 3,
-            walk: MINUTE * 2,
+            run: 3,
+            walk: 2,
             repeat: 5
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 3
       // region week 4
       {
         name: 'day 1/ week 4',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 5,
-            walk: MINUTE * 3,
+            run: 5,
+            walk: 3,
             repeat: 3
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 4',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 5,
-            walk: MINUTE * 3,
+            run: 5,
+            walk: 3,
             repeat: 3
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 4',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 15,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 2000
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 4
       // region week 5
       {
         name: 'day 1/ week 5',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 7,
-            walk: MINUTE * 2,
+            run: 7,
+            walk: 2,
             repeat: 3
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 5',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 7,
-            walk: MINUTE * 2,
+            run: 7,
+            walk: 2,
             repeat: 3
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 5',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 15,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 2000
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 5
       // region week 6
       {
         name: 'day 1/ week 6',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 8,
-            walk: MINUTE * 2,
+            run: 8,
+            walk: 2,
             repeat: 3
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 6',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 10,
-            walk: MINUTE * 2,
+            run: 10,
+            walk: 2,
             repeat: 2
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 6',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 22,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 3000
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 6
       // region week 7
       {
         name: 'day 1/ week 7',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 12,
-            walk: MINUTE * 2,
+            run: 12,
+            walk: 2,
             repeat: 2
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 7',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 12,
-            walk: MINUTE * 2,
+            run: 12,
+            walk: 2,
             repeat: 2
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 7',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 22,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 3000
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 7
       // region week 8
       {
         name: 'day 1/ week 8',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 15,
-            walk: MINUTE * 2,
+            run: 15,
+            walk: 2,
             repeat: 2
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 2/ week 8',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: MINUTE * 15,
-            walk: MINUTE * 2,
+            run: 15,
+            walk: 2,
             repeat: 2
           },
           longRunning: {
             distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       {
         name: 'day 3/ week 8',
-        warmUp: MINUTE * 5,
+        warmUp: 5,
         activity: {
           repeatRunning: {
-            run: 0,
+            run: 37,
             walk: 0,
-            repeat: 0
+            repeat: 1
           },
           longRunning: {
-            distance: 5000
+            distance: 0
           }
         },
-        warmDown: MINUTE * 5
+        warmDown: 5
       },
       // endregion week 8
     ];
