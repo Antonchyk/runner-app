@@ -23,6 +23,9 @@ import {
 import {ClockTimeDirective} from './directives/clock-time.directive';
 import {UserService} from './services/user.service';
 import {DistanceService} from './services/distance.service';
+import {environment} from '../environments/environment';
+import {AngularFireModule} from '@angular/fire';
+import { AuthComponent } from './components/auth/auth.component';
 
 const appRoutes: Routes = [
   {
@@ -45,7 +48,8 @@ const appRoutes: Routes = [
     ProgramDayComponent,
     ProgramsListComponent,
     ProgramComponent,
-    ClockTimeDirective
+    ClockTimeDirective,
+    AuthComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +88,8 @@ const appRoutes: Routes = [
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    AngularFireModule.initializeApp(environment.firebase)
   ],
   providers: [
     ProgramsService,
