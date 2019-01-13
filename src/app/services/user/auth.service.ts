@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {auth} from 'firebase/app';
+import * as firebase from 'firebase';
 
 @Injectable()
 export class AuthService {
@@ -8,11 +8,20 @@ export class AuthService {
 
   }
 
-  login() {
-    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+  createUserWithEmailAndPassword(email: string, password: string): Promise<firebase.auth.UserCredential> {
+    return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
   }
-  logout() {
-    this.afAuth.auth.signOut();
+
+  signInWithEmailAndPassword(email: string, password: string): Promise<firebase.auth.UserCredential> {
+    return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+  }
+
+  signOut(): Promise<void> {
+    return this.afAuth.auth.signOut();
+  }
+
+  sendPasswordResetEmail(email: string, actionCodeSettings?: firebase.auth.ActionCodeSettings | null): Promise<void> {
+    return this.afAuth.auth.sendPasswordResetEmail(email, actionCodeSettings);
   }
 
 }

@@ -119,7 +119,7 @@ export class ProgramsService {
               {
                 type: 'walk',
                 distance: 0,
-                time: item.activity.repeatRunning.walk
+                time: item.activity.repeatRunning.walk * MINUTE
               }
             );
           }
@@ -129,13 +129,13 @@ export class ProgramsService {
       day.timing.unshift({
         type: 'warm_up',
         distance: 0,
-        time: item.warmUp
+        time: item.warmUp * MINUTE
       });
 
       day.timing.push({
         type: 'warm_down',
         distance: 0,
-        time: item.warmDown
+        time: item.warmDown * MINUTE
       });
       programDays.push(day);
     });

@@ -25,7 +25,7 @@ import {UserService} from './services/user.service';
 import {DistanceService} from './services/distance.service';
 import {environment} from '../environments/environment';
 import {AngularFireModule} from '@angular/fire';
-import { AuthComponent } from './components/auth/auth.component';
+import {AuthComponent} from './components/auth/auth.component';
 
 const appRoutes: Routes = [
   {
