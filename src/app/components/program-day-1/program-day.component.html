@@ -1,0 +1,64 @@
+<mat-toolbar color="primary">
+  <button [routerLink]="['/program', programName]" mat-icon-button>
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <span>{{day.name}}</span>
+</mat-toolbar>
+<mat-card class="wrapper">
+  <p class="timer" *ngIf="!inDistance">
+    {{time | date:'mm:ss'}}
+  </p>
+  <p class="timer" *ngIf="inDistance">
+    {{distance}}
+  </p>
+  <p class="training-type">
+    {{type}}
+  </p>
+  <mat-grid-list cols="8" rowHeight="150px">
+    <mat-grid-tile [colspan]="2">
+      <div>
+        <p class="next-item">Time left:</p>
+        <p class="next-item">
+          {{totalTimeLeft | date:'mm:ss'}}
+        </p>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="4">
+      <div *ngIf="!inDistance && !dayIsDone">
+        <button mat-fab color="primary" (click)="start()" class="run-button mat-elevation-z0" *ngIf="!inProgress">
+          Start
+        </button>
+        <button mat-fab color="primary" (click)="pauseTimer()" class="run-button mat-elevation-z0" *ngIf="inProgress">
+          Pause
+        </button>
+      </div>
+      <div *ngIf="dayIsDone">
+        <button mat-fab color="primary" (click)="saveDay()" class="run-button mat-elevation-z0">Done</button>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2">
+      <div>
+        <p class="next-item">Next:</p>
+        <p class="next-item" (click)="next()" *ngIf="schedule[roundIndex + 1]">
+          <span>{{schedule[roundIndex + 1].type}}</span>&nbsp;
+          <span *ngIf="schedule[roundIndex + 1].time > 0">{{schedule[roundIndex + 1].time | date:'mm:ss'}}</span>
+          <span *ngIf="schedule[roundIndex + 1].distance > 0">{{schedule[roundIndex + 1].distance}}m</span>
+        </p>
+        <p *ngIf="!schedule[roundIndex + 1]" (click)="saveDay()">
+          <span>Done</span>
+        </p>
+      </div>
+
+    </mat-grid-tile>
+  </mat-grid-list>
+  <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+  <p *ngIf="inDistance">
+    {{distance}}
+  </p>
+  <!--<mat-list>-->
+  <!--<mat-list-item *ngFor="let timer of day.timing">-->
+  <!--<span *ngIf="timer.time > 0" appClockTime [cTime]="timer.time"></span>-->
+  <!--<span *ngIf="timer.distance > 0">{{timer.distance}}m</span>-->
+  <!--</mat-list-item>-->
+  <!--</mat-list>-->
+</mat-card>
