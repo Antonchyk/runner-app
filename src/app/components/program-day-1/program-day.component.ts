@@ -6,7 +6,7 @@ import {Howl} from 'howler';
 import {UserService} from '../../services/user.service';
 
 const SAVE_INTERVAL = 2000;
-const INTERVAL = 1000;
+const INTERVAL = 100;
 
 @Component({
   selector: 'app-program-day-1',
@@ -68,15 +68,20 @@ export class ProgramDay1Component implements OnInit, OnDestroy {
     if (this.inPause) {
       this.inPause = false;
       this.timer.start();
-      this.timeLeftTimer.start();
+      // this.timeLeftTimer.start();
     } else {
       this.inProgress = true;
       this.roundIndex = 0;
       this.type = this.schedule[0].type;
-      this.timer = new Timer(this.schedule[0].time, INTERVAL, t => this.onTick(t), () => this.onTimerFinished());
+
+      this.timer = new Timer(this.schedule[0].time, INTERVAL);
+      this.timer.onInterval((time) => this.onTick(time));
+      this.timer.onComplete(() => this.onTimerFinished());
       this.timer.start();
-      this.timeLeftTimer = new Timer(this.getTotalTime(this.day), INTERVAL, t => this.updateTotalTimeLeft(t));
-      this.timeLeftTimer.start();
+
+      // this.timeLeftTimer = new Timer(this.getTotalTime(this.day), INTERVAL);
+      // this.timeLeftTimer.onInterval(time => this.updateTotalTimeLeft(time));
+      // this.timeLeftTimer.start();
     }
   }
 
@@ -84,7 +89,7 @@ export class ProgramDay1Component implements OnInit, OnDestroy {
     this.inProgress = false;
     this.inPause = true;
     this.timer.pause();
-    this.timeLeftTimer.pause();
+    // this.timeLeftTimer.pause();
   }
 
   saveDay() {
@@ -112,10 +117,14 @@ export class ProgramDay1Component implements OnInit, OnDestroy {
       this.roundIndex++;
       const currentSchedule = this.schedule[this.roundIndex];
       this.type = currentSchedule.type;
-      this.timer = new Timer(currentSchedule.time, INTERVAL, this.onTick, this.onTimerFinished);
-      this.timer.start();
-      this.timeLeftTimer = new Timer(this.getTotalTime(this.day), INTERVAL, this.updateTotalTimeLeft);
-      this.timeLeftTimer.start();
+      this.timer.stop();
+      this.timer = new Timer(currentSchedule.time, INTERVAL);
+      this.timer
+        .onInterval(time => this.onTick(time))
+        .onComplete(() => {
+          this.onTimerFinished();
+        })
+        .start();
       this.sound.play();
     } else {
       this.type = 'you_are_done';

@@ -49,11 +49,6 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
 
     this.timeLeftTimer = new Timer();
     this.timeLeftTimer.emitter.on('tick', () => this.updateTotalTimeLeft());
-
-    this.distanceService.emitter.on('distance_changed', distance => {
-      console.log(distance);
-      this.distance = distance;
-    });
   }
 
   ngOnInit() {
@@ -147,7 +142,6 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
         this.timeLeftTimer.stop();
         this.timeLeftTimer.start(this.getTotalTime(this.day));
         this.sound.play();
-        this.distanceService.stop();
       }
     } else {
       this.type = 'you are done';

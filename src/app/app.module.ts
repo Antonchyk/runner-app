@@ -26,7 +26,6 @@ import {DistanceService} from './services/distance.service';
 import {environment} from '../environments/environment';
 import {AngularFireModule} from '@angular/fire';
 import {AuthComponent} from './components/auth/auth.component';
-import {ProgramDay1Component} from './components/program-day-1/program-day.component';
 
 const appRoutes: Routes = [
   {
@@ -39,14 +38,14 @@ const appRoutes: Routes = [
   },
   {
     path: 'program-day/:program-name/:day-index',
-    component: ProgramDay1Component,
+    component: ProgramDayComponent,
   }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProgramDay1Component,
+    ProgramDayComponent,
     ProgramsListComponent,
     ProgramComponent,
     ClockTimeDirective,

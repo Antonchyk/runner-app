@@ -1,20 +1,21 @@
 import {EventEmitter} from 'events';
 
+export type TimerFunc = (time: number) => void;
+
 /**
  * Created by antonchyk on 4/24/18.
  */
 export default class TimerM {
   private timer = null;
   private currentTime = 0;
-  private tick = 100;
-  private intervalHandler: (time: number) => void;
+  private tick = 0;
   private finishHandler: () => void;
+  private subscribers: TimerFunc[] = [];
+  private onTickFunc: (time: number) => void;
 
-  constructor(totalTime: number, interval: number, intervalHandler?: (time: number) => void, finishHandler?: () => void) {
+  constructor(totalTime: number, interval: number) {
     this.currentTime = totalTime;
     this.tick = interval;
-    this.intervalHandler = intervalHandler;
-    this.finishHandler = finishHandler;
   }
 
   start() {
@@ -26,21 +27,43 @@ export default class TimerM {
         this.stop();
         this.finishHandler.call(null);
       }
-      this.intervalHandler(this.currentTime);
+      const time = this.getTime();
+      this.onTickFunc.call(this, time);
     }, this.tick);
   }
 
-  pause() {
+  pause(): TimerM {
     clearInterval(this.timer);
+    return this;
   }
 
-  stop() {
+  stop(): TimerM {
     this.currentTime = 0;
     clearInterval(this.timer);
+    return this;
   }
 
   getTime(): number {
     return this.currentTime;
+  }
+
+  subscribe(next: (time) => void): TimerM {
+    this.subscribers.push(next);
+    return this;
+  }
+
+  onComplete(cb: () => void): TimerM {
+    this.finishHandler = cb;
+    return this;
+  }
+
+  onInterval(cb: (time: number) => void): TimerM {
+    this.onTickFunc = cb;
+    return this;
+  }
+
+  private notify() {
+    this.subscribers.forEach(i => i.call(this, this.getTime()));
   }
 
 }
