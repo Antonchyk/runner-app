@@ -16,7 +16,6 @@ const SAVE_INTERVAL = 2000;
 export class ProgramDayComponent implements OnInit, OnDestroy {
 
   time: Date = new Date(0);
-  timer: Timer;
   type = '';
   distance = 0;
   progress = 100;
@@ -33,6 +32,7 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
   private sound: Howl;
   private timeLeftTimer: Timer;
   private saveCounter = 0;
+  private timer: Timer;
 
 
   constructor
@@ -41,7 +41,6 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: ProgramsService,
     private userService: UserService,
-    private distanceService: DistanceService
   ) {
     this.timer = new Timer();
     this.timer.emitter.on('tick', () => this.onTick());
@@ -58,7 +57,7 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
       this.day = this.service.getProgramDay(this.programName, this.dayIndex);
       this.schedule = this.day.timing;
       this.type = this.schedule[0].type;
-      this.totalTimeLeft = this.getTotalTime(this.day);
+      this.totalTimeLeft = this.getTotalTime(this.day, this.roundIndex);
     });
     this.sound = new Howl({
       src: ['../../../assets/sounds/beep.wav'],
@@ -73,8 +72,8 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
   startTimer() {
     if (this.inPause) {
       this.inPause = false;
-      this.timer.unPause();
-      this.timeLeftTimer.unPause();
+      this.timer.play();
+      this.timeLeftTimer.play();
     } else {
       this.roundIndex = 0;
       this.type = this.schedule[0].type;
@@ -124,7 +123,6 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
 
   private onTick() {
     this.time = new Date(this.timer.getTime());
-    this.progress = (this.timer.getTime() / this.schedule[this.roundIndex].time) * 100;
     this.inProgress = true;
     this.saveCurrentState();
   }
@@ -134,13 +132,10 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
       this.roundIndex++;
       const currentSchedule = this.schedule[this.roundIndex];
       this.type = currentSchedule.type;
-      if (currentSchedule.distance > 0) {
-        this.inDistance = true;
-        this.distanceService.start();
-      } else if (currentSchedule.time > 0) {
+      if (currentSchedule.time > 0) {
         this.timer.start(currentSchedule.time);
         this.timeLeftTimer.stop();
-        this.timeLeftTimer.start(this.getTotalTime(this.day));
+        this.timeLeftTimer.start(this.getTotalTime(this.day, this.roundIndex));
         this.sound.play();
       }
     } else {
@@ -149,27 +144,6 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
       this.dayIsDone = true;
       localStorage.removeItem('LAST_ROUND');
     }
-  }
-
-  private subscribeToPageHide() {
-    // window.addEventListener('pagehide', () => {
-    //   localStorage.setItem('pagehide', 'true');
-    //   // this.saveCurrentStateBeforeClose();
-    // }, false);
-    // window.addEventListener('blur', () => {
-    //   localStorage.setItem('blur', 'true');
-    //   this.saveCurrentStateBeforeClose();
-    // }, false);
-    // window.addEventListener('abort', () => {
-    //   localStorage.setItem('abort', 'true');
-    // }, false);
-    // window.addEventListener('touchcancel', () => {
-    //   localStorage.setItem('touchcancel', 'true');
-    // }, false);
-    // window.addEventListener('unload', () => {
-    //   localStorage.setItem('unload', 'true');
-    //   this.saveCurrentStateBeforeClose();
-    // }, false);
   }
 
   private saveCurrentState() {
@@ -186,10 +160,10 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getTotalTime(day: ProgramDay): number {
+  private getTotalTime(day: ProgramDay, roundIndex: number): number {
     let sum = 0;
     day.timing
-      .slice(this.roundIndex)
+      .slice(roundIndex)
       .map(i => {
         sum += i.time;
       });
@@ -197,7 +171,9 @@ export class ProgramDayComponent implements OnInit, OnDestroy {
   }
 
   private updateTotalTimeLeft() {
-    this.totalTimeLeft = this.timeLeftTimer.getTime();
+    const time = this.timeLeftTimer.getTime();
+    this.totalTimeLeft = time;
+    this.progress = (time / this.getTotalTime(this.day, 0) * 100);
   }
 
 }

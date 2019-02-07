@@ -38,10 +38,6 @@ export default class TimerCountdown {
     clearInterval(this.timer);
   }
 
-  unPause() {
-    this.start(this.currentTime);
-  }
-
   play() {
     this.start(this.currentTime);
   }
